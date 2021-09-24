@@ -1,42 +1,51 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, Res, HttpException, HttpStatus, Patch, ParseUUIDPipe } from '@nestjs/common'
+import { PasswordValidator } from './pipes/password-validator.pipe'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { Response } from 'express'
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor (private readonly usersService: UsersService) {}
 
+  @UsePipes(ValidationPipe)
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto)
+  async create (@Body(new PasswordValidator()) createUserDto: CreateUserDto, @Res() res: Response) {
+    delete createUserDto.passwordConfirmation
+    const userCreated = await this.usersService.create(createUserDto)
+    if (!userCreated) throw new HttpException('The received email is already in use', HttpStatus.FORBIDDEN)
+    res.status(HttpStatus.CREATED).send()
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll()
+  findAll () {
+    const users = this.usersService.findAll()
+    if (!users) throw new HttpException('user not found', HttpStatus.BAD_REQUEST)
+    return users
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id)
+  async findOne (@Param('id', ParseUUIDPipe) id: string) {
+    const user = await this.usersService.findOne(id)
+    if (!user) throw new HttpException('user not found', HttpStatus.BAD_REQUEST)
+    return user
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto)
+  async update (
+    @Param('id', ParseUUIDPipe) id: string, @Body(new PasswordValidator()) updateUserDto: UpdateUserDto,
+    @Res() res: Response
+  ) {
+    const user = await this.usersService.update(id, updateUserDto)
+    if (!user) throw new HttpException('user not found', HttpStatus.BAD_REQUEST)
+    res.status(HttpStatus.NO_CONTENT).send()
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id)
+  async remove (@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
+    const deletedRow = await this.usersService.remove(id)
+    if (!deletedRow) throw new HttpException('user not found', HttpStatus.BAD_REQUEST)
+    res.status(HttpStatus.NO_CONTENT).send()
   }
 }
