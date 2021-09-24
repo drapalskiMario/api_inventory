@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, Res, HttpException, HttpStatus, Patch, ParseUUIDPipe } from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Delete, UsePipes, ValidationPipe, Res, HttpException, HttpStatus, Patch, ParseUUIDPipe, UseGuards } from '@nestjs/common'
 import { PasswordValidator } from './pipes/password-validator.pipe'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { Response } from 'express'
+import { AuthGuard } from '@nestjs/passport'
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
   constructor (private readonly usersService: UsersService) {}
