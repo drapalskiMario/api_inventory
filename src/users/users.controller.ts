@@ -23,7 +23,7 @@ export class UsersController {
   @Get()
   findAll () {
     const users = this.usersService.findAll()
-    if (!users) throw new HttpException('user not found', HttpStatus.BAD_REQUEST)
+    if (!users) throw new HttpException('users not found', HttpStatus.BAD_REQUEST)
     return users
   }
 
@@ -36,7 +36,8 @@ export class UsersController {
 
   @Patch(':id')
   async update (
-    @Param('id', ParseUUIDPipe) id: string, @Body(new PasswordValidator()) updateUserDto: UpdateUserDto,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body(new PasswordValidator()) updateUserDto: UpdateUserDto,
     @Res() res: Response
   ) {
     const user = await this.usersService.update(id, updateUserDto)

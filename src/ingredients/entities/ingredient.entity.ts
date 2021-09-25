@@ -2,7 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  DeleteDateColumn,
+  DeleteDateColumn
 } from 'typeorm'
 @Entity()
 export class Ingredient {
@@ -17,6 +17,9 @@ export class Ingredient {
 
   @Column()
   quantity: number
+
+  @Column({ name: 'unit_price', type: 'decimal', precision: 6, scale: 2 })
+  unitPrice: number
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deteletedAt?: Date

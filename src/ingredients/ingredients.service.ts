@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 import { CreateIngredientDto } from './dto/create-ingredient.dto'
 import { UpdateIngredientDto } from './dto/update-ingredient.dto'
+import { Ingredient } from './entities/ingredient.entity'
 
 @Injectable()
 export class IngredientsService {
-  create(createIngredientDto: CreateIngredientDto) {
-    return 'This action adds a new ingredient'
+  constructor (@InjectRepository(Ingredient) private ingredientRepository: Repository<Ingredient>) {}
+
+  create (createIngredientDto: CreateIngredientDto): Promise<Ingredient> {
+    return this.ingredientRepository.save(createIngredientDto)
   }
 
-  findAll() {
-    return `This action returns all ingredients`
+  findAll (): Promise<Ingredient[]> {
+    return this.ingredientRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ingredient`
+  findOne (id: string): Promise<Ingredient> {
+    return this.ingredientRepository.findOne({ id })
   }
 
-  update(id: number, updateIngredientDto: UpdateIngredientDto) {
-    return `This action updates a #${id} ingredient`
+  async update (id: string, updateIngredientDto: UpdateIngredientDto): Promise<Ingredient> {
+    const ingredient = await this.ingredientRepository.findOne({ id })
+    if (!ingredient) return null
+    return await this.ingredientRepository.save({ id, ...updateIngredientDto })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ingredient`
+  async remove (id: string): Promise<number> {
+    const ingredient = await this.ingredientRepository.findOne({ id })
+    if (!ingredient) return null
+    const row = await this.ingredientRepository.softDelete({ id })
+    return row.affected
   }
 }

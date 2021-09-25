@@ -32,7 +32,7 @@ export class UsersService {
   async update (id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({ id })
     if (!user) return null
-    return await this.userRepository.save({ id, updateUserDto })
+    return await this.userRepository.save({ id, ...updateUserDto })
   }
 
   async remove (id: string): Promise<number> {
