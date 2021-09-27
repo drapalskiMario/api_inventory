@@ -1,9 +1,4 @@
-import {
-  ArgumentMetadata,
-  HttpException,
-  HttpStatus,
-  PipeTransform
-} from '@nestjs/common'
+import { ArgumentMetadata, HttpException, HttpStatus, PipeTransform } from '@nestjs/common'
 import { CreateUserDto } from '../dto/create-user.dto'
 
 export class PasswordValidator implements PipeTransform {

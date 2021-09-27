@@ -1,10 +1,19 @@
-class Component {
-  ingredientId: string
-  quantity: string
-}
+import { IsArray, IsNotEmpty, IsString } from 'class-validator'
+
 export class CreateProductDto {
+  @IsNotEmpty()
+  @IsString()
   name: string
-  urlImagem: string
-  price: string
-  components: [Component]
+
+  @IsNotEmpty()
+  price: number
+
+  @IsNotEmpty()
+  @IsArray()
+  components: [
+    {
+      ingredientId: string,
+      quantity: number
+    }
+  ]
 }

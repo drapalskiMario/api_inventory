@@ -1,12 +1,5 @@
 import { Ingredient } from '../../ingredients/entities/ingredient.entity'
-import {
-  Column,
-  DeleteDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm'
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Product } from './product.entity'
 
 @Entity()

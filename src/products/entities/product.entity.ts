@@ -1,9 +1,4 @@
-import {
-  Column,
-  DeleteDateColumn,
-  Entity,
-  PrimaryGeneratedColumn
-} from 'typeorm'
+import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
 export class Product {
@@ -16,8 +11,8 @@ export class Product {
   @Column({ type: 'decimal', precision: 6, scale: 2 })
   price: number
 
-  @Column({ name: 'uri_image' })
-  uriImage: string
+  @Column()
+  image: string
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deteletedAt?: Date
