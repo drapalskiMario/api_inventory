@@ -5,8 +5,6 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { Response } from 'express'
 import { AuthGuard } from '@nestjs/passport'
-
-@UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
   constructor (private readonly usersService: UsersService) {}
@@ -20,6 +18,7 @@ export class UsersController {
     res.status(HttpStatus.CREATED).send()
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll () {
     const users = this.usersService.findAll()
@@ -27,6 +26,7 @@ export class UsersController {
     return users
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   async findOne (@Param('id', ParseUUIDPipe) id: string) {
     const user = await this.usersService.findOne(id)
@@ -34,6 +34,7 @@ export class UsersController {
     return user
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   async update (
     @Param('id', ParseUUIDPipe) id: string,
@@ -45,6 +46,7 @@ export class UsersController {
     res.status(HttpStatus.NO_CONTENT).send()
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async remove (@Param('id', ParseUUIDPipe) id: string, @Res() res: Response) {
     const deletedRow = await this.usersService.remove(id)

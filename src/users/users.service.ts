@@ -11,7 +11,7 @@ export class UsersService {
   constructor (@InjectRepository(User) private userRepository: Repository<User>) {}
 
   async create (createUserDto: CreateUserDto): Promise <User> {
-    const userExists = await this.userRepository.findOne({ email: createUserDto.email })
+    const userExists = await this.userRepository.findOne({ email: createUserDto.email }, { withDeleted: true })
     if (userExists) return null
     createUserDto.password = bcrypt.hashSync(createUserDto.password)
     return await this.userRepository.save(createUserDto)
